@@ -237,7 +237,7 @@ $.extend(MT.Editor.TinyMCE.prototype, MT.Editor.prototype, {
                 .prependTo(this.$editorTextareaParent);
 
             this.ignoreSetDirty(function() {
-                this.tinymce.setContent(this.source.getContent());
+                this.tinymce.setContent(this.source.getContent(), {format: 'raw'});
             });
 
             this.$editorIframe.show();
