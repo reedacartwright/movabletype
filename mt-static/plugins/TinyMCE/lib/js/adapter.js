@@ -149,7 +149,9 @@ $.extend(MT.Editor.TinyMCE, MT.Editor, {
 
         content_css: '',
         body_class: '',
-        body_id: ''
+        body_id: '',
+
+        save_on_switch_to_source_options: {}
     }
 });
 
@@ -190,6 +192,7 @@ $.extend(MT.Editor.TinyMCE.prototype, MT.Editor.prototype, {
 
     setFormat: function(format, calledInInit) {
         var mode = MT.EditorManager.toMode(format);
+        var config = this.constructor.config;
 
         if (calledInInit && mode != 'source') {
             return;
@@ -218,7 +221,7 @@ $.extend(MT.Editor.TinyMCE.prototype, MT.Editor.prototype, {
 
                 if (! calledInInit) {
                     this.ignoreSetDirty(function() {
-                        this.editor.save();
+                        this.editor.save(config.save_on_switch_to_source_options);
                     });
                 }
 
