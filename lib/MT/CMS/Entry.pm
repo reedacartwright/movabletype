@@ -1211,12 +1211,13 @@ sub _build_entry_preview {
     $ctx->stash( 'category', $cat ) if $cat;
     $ctx->{current_timestamp}    = $ts;
     $ctx->{current_archive_type} = $at;
-    $ctx->var( 'entry_template',    1 );
-    $ctx->var( 'archive_template',  1 );
-    $ctx->var( 'entry_template',    1 );
-    $ctx->var( 'feedback_template', 1 );
-    $ctx->var( 'archive_class',     'entry-archive' );
-    $ctx->var( 'preview_template',  1 );
+    $ctx->var( 'preview_template', 1 );
+
+    my $archiver = MT->publisher->archiver($at);
+    if ( my $params = $archiver->template_params ) {
+        $ctx->var( $_, $params->{$_} ) for keys %$params;
+    }
+
     my $html = $tmpl->output;
 
     unless ( defined($html) ) {
@@ -1846,6 +1847,7 @@ sub save {
                     Entry       => $orig_obj,
                     ArchiveType => $archive_type,
                     Category    => $primary_category_old,
+                    Force       => 0,
                 );
             }
         }
@@ -2776,7 +2778,8 @@ sub update_entry_status {
                 : 'Individual';
             $app->publisher->remove_entry_archive_file(
                 Entry       => $entry,
-                ArchiveType => $archive_type
+                ArchiveType => $archive_type,
+                Force       => 0,
             );
         }
         my $original   = $entry->clone;
