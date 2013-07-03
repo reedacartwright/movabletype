@@ -272,11 +272,13 @@ sub list_props {
                     = MT->static_path . 'images/status_icons/' . $status_file;
                 my $view_img
                     = MT->static_path . 'images/status_icons/view.gif';
+                my $view_link_text
+                    = MT->translate( 'View [_1]', $class_label );
                 my $view_link = $obj->status == MT::Entry::RELEASE()
                     ? qq{
                     <span class="view-link">
                       <a href="$permalink" target="_blank">
-                        <img alt="View $class_label" src="$view_img" />
+                        <img alt="$view_link_text" src="$view_img" />
                       </a>
                     </span>
                 }
@@ -1444,7 +1446,25 @@ sub save {
         }
     }
 
-    $entry->clear_cache() if $is_new;
+    if ($is_new) {
+
+        # Clear some cache
+        $entry->clear_cache();
+
+        my $blog = $entry->blog;
+        my $at 
+            = $blog->archive_type_preferred
+            || $blog->archive_type
+            || 'Individual';
+
+        my $key;
+        my $publisher  = MT->instance->publisher;
+        my $cache_file = MT::Request->instance->cache('file');
+        $key = $publisher->archive_file_cache_key( $entry, $blog, $at )
+            if $publisher->can('archive_file_cache_key');
+        delete $cache_file->{$key}
+            if $key && $cache_file && exists $cache_file->{$key};
+    }
 
     1;
 }
