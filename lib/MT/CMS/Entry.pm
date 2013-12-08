@@ -1146,7 +1146,9 @@ sub preview {
             if ( defined $new_url ) {
                 $preview_url =~ s!^\Q$old_url\E!$new_url!;
             }
-
+			# Strip off protocol to avoid mixed content issues
+			$preview_url =~ s!^http:!!;
+			
             $param{preview_url} = $preview_url;
 
             # we have to make a record of this preview just in case it
