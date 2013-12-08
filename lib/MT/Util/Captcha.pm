@@ -238,6 +238,7 @@ sub _generate_captcha {
         tile    => 'False',
         image   => $background
     );
+    $im->Set(colorspace => 'sRGB');
     $im->Modulate( brightness => 105 );
     $im->Border(
         fill     => 'black',
