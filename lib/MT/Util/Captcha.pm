@@ -233,6 +233,7 @@ sub _generate_captcha {
     $background->Read(
         File::Spec->catfile( $base, 'background' . $a . '.png' ) );
     $background->Resize( width => ( $len * WIDTH() ), height => HEIGHT() );
+    $im->Set(colorspace => 'RGB');
     $im->Composite(
         compose => "Bumpmap",
         tile    => 'False',
